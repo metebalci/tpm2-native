@@ -14,7 +14,8 @@ def _shutdown(true_if_clear):
 
 
 def _help():
-    print('tpm2_Shutdown.py [clear|state]')
+    print('tpm2_Shutdown clear|state')
+    sys.exit(1)
 
 
 def main():

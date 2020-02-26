@@ -12,7 +12,8 @@ def _startup(true_if_clear):
 
 
 def _help():
-    print('tpm2_Startup.py [clear|state]')
+    print('tpm2_Startup clear|state')
+    sys.exit(1)
 
 
 def main():
