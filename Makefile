@@ -2,6 +2,8 @@
 clean:
 	rm -rf dist
 
-upload:  clean
+dist: clean
 	python setup.py sdist
+
+pypi: dist
 	twine upload dist/*

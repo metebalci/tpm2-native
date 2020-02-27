@@ -34,6 +34,10 @@ All commands in this section in the spec. are implemented.
 - GetRandom
 - StirRandom
 
+## Capability Commands
+
+- GetCapability (partially implemented)
+
 # References
 
 - [TPM 2.0 Library Specification](https://trustedcomputinggroup.org/resource/tpm-library-specification/)
@@ -158,4 +162,14 @@ res: 80 01 00 00 00 0a 00 00 00 00
                 tag: 0x8001 [TPM_ST_NO_SESSIONS]
        responseSize: 0xa [10]
        responseCode: 0x0 [TPM_RC_SUCCESS]
+```
+
+GetCapability:
+
+```
+```
+
+TestParms:
+
+``
 ```
