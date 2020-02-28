@@ -221,7 +221,6 @@ TPM_ALG["ECB"]          = 0x0044
 TPM_ALGrev = _reverse_dict('TPM_ALG', TPM_ALG)
 
 TPM_CAP = {}
-TPM_CAP['FIRST']            = 0x00000000
 TPM_CAP['ALGS']             = 0x00000000
 TPM_CAP['HANDLES']          = 0x00000001
 TPM_CAP['COMMANDS']         = 0x00000002
@@ -232,7 +231,6 @@ TPM_CAP['TPM_PROPERTIES']   = 0x00000006
 TPM_CAP['PCR_PROPERTIES']   = 0x00000007
 TPM_CAP['ECC_CURVES']       = 0x00000008
 TPM_CAP['AUTH_POLICIES']    = 0x00000009
-TPM_CAP['LAST']             = 0x00000009
 TPM_CAP['VENDOR_PROPERTY']  = 0x00000100
 TPM_CAPrev = _reverse_dict('TPM_CAP', TPM_CAP)
 
@@ -311,7 +309,6 @@ TPM_PT['AUDIT_COUNTER_1']       = PT_VAR + 20
 TPM_PTrev = _reverse_dict('TPM_PT', TPM_PT)
 
 TPM_PT_PCR = {}
-TPM_PT_PCR['FIRST']             = 0x00000000
 TPM_PT_PCR['SAVE']              = 0x00000000
 TPM_PT_PCR['EXTEND_L0']         = 0x00000001
 TPM_PT_PCR['RESET_L0']          = 0x00000002
@@ -327,8 +324,50 @@ TPM_PT_PCR['NO_INCREMENT']      = 0x00000011
 TPM_PT_PCR['DRTM_RESET']        = 0x00000012
 TPM_PT_PCR['POLICY']            = 0x00000013
 TPM_PT_PCR['AUTH']              = 0x00000014
-TPM_PT_PCR['LAST']              = 0x00000014
 TPM_PT_PCRrev = _reverse_dict('TPM_PT_PCR', TPM_PT_PCR)
+
+TPM_ECC = {}
+TPM_ECC['NONE']                 = 0x0000
+TPM_ECC['NIST_P192']            = 0x0001
+TPM_ECC['NIST_P224']            = 0x0002
+TPM_ECC['NIST_P256']            = 0x0003
+TPM_ECC['NIST_P384']            = 0x0004
+TPM_ECC['NIST_P521']            = 0x0005
+TPM_ECC['BN_P256']              = 0x0010
+TPM_ECC['BN_P638']              = 0x0011
+TPM_ECC['SM2_P256']             = 0x0020
+TPM_ECCrev = _reverse_dict('TPM_ECC', TPM_ECC)
+
+TPM_RH = {}
+TPM_RH['SRK']                   = 0x40000000
+TPM_RH['OWNER']                 = 0x40000001
+TPM_RH['REVOKE']                = 0x40000002
+TPM_RH['TRANSPORT']             = 0x40000003
+TPM_RH['OPERATOR']              = 0x40000004
+TPM_RH['ADMIN']                 = 0x40000005
+TPM_RH['EK']                    = 0x40000006
+TPM_RH['NULL']                  = 0x40000007
+TPM_RH['UNASSIGNED']            = 0x40000008
+TPM_RH['PW']                    = 0x40000009
+TPM_RH['LOCKOUT']               = 0x4000000A
+TPM_RH['ENDORSEMENT']           = 0x4000000B
+TPM_RH['PLATFORM']              = 0x4000000C
+TPM_RH['PLATFORM_NV']           = 0x4000000D
+TPM_RH['AUTH_00']               = 0x40000010
+TPM_RH['AUTH_FF']               = 0x4000010F
+TPM_RHrev = _reverse_dict('TPM_RH', TPM_RH)
+
+TPM_HT = {}
+TPM_HT['PCR']                   = 0x00
+TPM_HT['NV_INDEX']              = 0x01
+TPM_HT['HMAC_SESSION']          = 0x02
+TPM_HT['LOADED_SESSION']        = 0x02
+TPM_HT['POLICY_SESSION']        = 0x03
+TPM_HT['SAVED_SESSION']         = 0x03
+TPM_HT['PERMANENT']             = 0x40
+TPM_HT['TRANSIENT']             = 0x80
+TPM_HT['PERSISTENT']            = 0x81
+TPM_HTrev = _reverse_dict('TPM_HT', TPM_HT)
  
 TPM_RC = {}
 TPM_RC["SUCCESS"]       = 0x000

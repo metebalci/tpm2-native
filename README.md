@@ -36,7 +36,7 @@ All commands in this section in the spec. are implemented.
 
 ## Capability Commands
 
-- GetCapability (partially implemented)
+- GetCapability (still under development)
 
 # References
 
