@@ -1,9 +1,64 @@
 import struct
 import os
+import argparse
+
+
+# this is here in case sth needs to be done before and after parse_args
+def run(parser):
+    return parser.parse_args()
+
+
+def add_tpm_st(parser):
+    parser.add_argument('--sessions', choices=['yes', 'no'], required=True)
 
 
 def bytes2hex(b):
     return ' '.join([b[i:i+1].hex() for i in range(0, len(b))]).strip()
+
+
+def _info(level, label, value):
+    if level == 0:
+        s = label.rjust(20)
+    elif level == 1:
+        s = label.rjust(22)
+    elif level == 2:
+        s = label.rjust(24)
+    else:
+        s = label.rjust(26)
+    if value is None:
+        print(label)
+    else:
+        if isinstance(value, bytes):
+            print('%s%s%s' % (s, ': ' if len(label) > 0 else '', bytes2hex(value)))
+        elif isinstance(value, str):
+            print('%s%s%s' % (s, ': ' if len(label) > 0 else '', value))
+        elif isinstance(value, bool):
+            print('%s%s%s' % (s, ': ' if len(label) > 0 else '', 'yes' if value else 'no'))
+        elif isinstance(value, int):
+            print('%s%s%d [0x%x]' % (s, ': ' if len(label) > 0 else '', value, value))
+        elif isinstance(value, list):
+            print('%s%s' % (s, ':' if len(label) > 0 else '')) 
+            for x in value:
+                _info(level+1, '', x)
+        elif isinstance(value, tuple):
+            t1 = value[0]
+            t2 = value[1]
+            if isinstance(t1, int) and isinstance(t2, str):
+                print('%s%s%s [0x%x]' % (s, ': ' if len(label) > 0 else '', t2, t1))
+            else:
+                print('%s%s%s [%s]' % (s, ': ' if len(label) > 0 else '', t2, t1))
+
+
+def info0(label, value=None):
+    _info(0, label, value)
+
+
+def info1(label, value=None):
+    _info(1, label, value)
+
+
+def info2(label, value=None):
+    _info(2, label, value)
 
 
 def tpm2_xmit(b):
@@ -11,13 +66,15 @@ def tpm2_xmit(b):
     bws = struct.pack('!2sI', b[0:2], len(b)+4)[:] + b[2:]
     if len(bws) < 10:
         raise Error('request is too small, <10 bytes')
-    (tag, rs, cc) = struct.unpack("!HII", bws[0:10])
-    print("tag:".rjust(20) + " 0x%x [%s]" % (tag, TPM_STrev.get(tag, "UNKNOWN")))
-    print("requestSize:".rjust(20) + " 0x%x [%d]" % (rs, rs))
-    print("commandCode:".rjust(20) + " 0x%x [%s]" % (cc, TPM_CCrev.get(cc, "UNKNOWN")))
+    (tag, cs, cc) = struct.unpack("!HII", bws[0:10])
+    info0('<<< Command Header >>>')
+    info0('tag',            (tag, TPM_STrev.get(tag, 'UNKNOWN')))
+    info0('commandSize',    cs)
+    info0('commandCode',    (cc, TPM_CCrev.get(cc, 'UNKNOWN')))
     if len(bws) > 1024:
         raise Error('request is too big, >1024 bytes')
-    print('req: %s' % bytes2hex(bws))
+    info0('<<< XFER >>>')
+    info0('req', bws)
     dev = None
     try:
         dev = os.open('/dev/tpm0', os.O_RDWR)
@@ -25,22 +82,20 @@ def tpm2_xmit(b):
         if status != len(bws):
             raise Error('request cannot be transmitted')
         out = os.read(dev, 4096)
-        print('res: %s' % bytes2hex(out))
+        info0('res', out)
         if len(out) < 10:
             raise Error('response is too small, <10 bytes')
         # this is common to all responses
         (tag, rs, rc) = struct.unpack("!HII", out[0:10])
-        print("tag:".rjust(20) + " 0x%x [%s]" % (tag, TPM_STrev.get(tag, "UNKNOWN")))
-        print("responseSize:".rjust(20) + " 0x%x [%d]" % (rs, rs))
-        print("responseCode:".rjust(20) + " 0x%x [%s]" % (rc, TPM_RCrev.get(rc, "UNKNOWN")))
+        info0('<<< Response Header >>>')
+        info0('tag',            (tag, TPM_STrev.get(tag, 'UNKNOWN')))
+        info0('responseSize',   rs)
+        info0('responseCode',   (rc, TPM_RCrev.get(rc, 'UNKNOWN')))
         return (out[10:], tag, rs, rc)
     finally:
         if dev is not None:
             os.close(dev)
 
-def _set_members(prefix, d):
-    for (k, v) in d.items():
-        setattr(common, "%s_%s" % (prefix, d), v) 
 
 def _reverse_dict(prefix, d):
     rd = {}
